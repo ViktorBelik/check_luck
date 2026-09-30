@@ -1,0 +1,29 @@
+[project]
+name = "check-luck"
+version = "0.1.0"
+description = "Promo application for receipt registration"
+authors = [
+    {name = "BEL",email = "93378272+ViktorBelik@users.noreply.github.com"}
+]
+requires-python = ">=3.12"
+dependencies = [
+    "django (>=6.1.1,<7.0.0)",
+    "psycopg[binary] (>=3.3.6,<4.0.0)",
+    "python-dotenv (>=1.2.3,<2.0.0)",
+    "argon2-cffi (>=25.1.0,<26.0.0)"
+]
+
+[tool.poetry]
+package-mode = false
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "pytest (>=9.1.1,<10.0.0)",
+    "flake8 (>=7.4.1,<8.0.0)",
+    "djlint (>=1.46.3,<2.0.0)",
+    "pytest-django (>=4.14.0,<5.0.0)"
+]
