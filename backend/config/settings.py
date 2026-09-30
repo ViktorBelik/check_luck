@@ -16,6 +16,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from datetime import datetime
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -132,8 +134,13 @@ USE_I18N = True
 
 USE_TZ = True
 
-PROMO_START = os.getenv("PROMO_START")
-PROMO_END = os.getenv("PROMO_END")
+PROMO_START = datetime.fromisoformat(
+    os.getenv("PROMO_START", "2026-10-01T00:00:00+03:00")
+)
+
+PROMO_END = datetime.fromisoformat(
+    os.getenv("PROMO_END", "2026-12-31T23:59:59+03:00")
+)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
