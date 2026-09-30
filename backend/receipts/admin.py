@@ -14,7 +14,7 @@ class ReceiptAdmin(admin.ModelAdmin):
         "created_at",
     )
 
-    ordering = ("purchase_datetime",)
+    ordering = ("-purchase_datetime", "-created_at")
 
     list_filter = (
         "status",
