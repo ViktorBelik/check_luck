@@ -1,8 +1,30 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from django.shortcuts import render
+from django.conf import settings
 
 from .models import Receipt
+
+
+@login_required
+def register_page(request):
+    return render(
+        request,
+        "receipts/register.html",
+        {
+            "promo_start": settings.PROMO_START.isoformat(),
+            "promo_end": settings.PROMO_END.isoformat(),
+        },
+    )
+
+
+@login_required
+def cabinet_page(request):
+    return render(
+        request,
+        "receipts/cabinet.html",
+    )
 
 
 @login_required

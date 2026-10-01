@@ -1,0 +1,191 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+    min-height: 100%;
+    margin: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    color: #222;
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.page {
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 32px;
+}
+
+.page-header h1 {
+    margin: 0 0 12px;
+    font-size: 32px;
+    line-height: 1.2;
+}
+
+.promo-period {
+    margin: 0;
+    color: #666;
+}
+
+.receipt-form {
+    width: 100%;
+    padding: 32px;
+    background: #fff;
+    border-radius: 16px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-field {
+    min-width: 0;
+}
+
+.form-field label,
+.qr-section label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.input,
+textarea {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid #d5d5d5;
+    border-radius: 8px;
+    padding: 12px 14px;
+    background: #fff;
+}
+
+.input:focus,
+textarea:focus {
+    outline: none;
+    border-color: #333;
+}
+
+.input-error {
+    border-color: #d93025;
+}
+
+.field-error,
+.form-error {
+    margin: 6px 0 0;
+    color: #d93025;
+    font-size: 13px;
+}
+
+.qr-section {
+    margin-bottom: 28px;
+}
+
+.qr-section textarea {
+    display: block;
+    min-height: 90px;
+    resize: vertical;
+    margin-bottom: 12px;
+}
+
+.primary-button,
+.secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 20px;
+    text-decoration: none;
+}
+
+.primary-button {
+    background: #222;
+    color: #fff;
+}
+
+.secondary-button {
+    background: #eee;
+    color: #222;
+}
+
+.receipt-form .primary-button {
+    margin-top: 28px;
+}
+
+.success-message {
+    margin: 20px 0 0;
+    color: #18794e;
+}
+
+.cabinet {
+    padding: 32px;
+    background: #fff;
+    border-radius: 16px;
+}
+
+
+/* Mobile: 375px */
+@media (max-width: 600px) {
+    .page {
+        padding: 24px 16px;
+    }
+
+    .container {
+        width: 100%;
+    }
+
+    .page-header {
+        margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+        font-size: 26px;
+    }
+
+    .receipt-form {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .primary-button,
+    .secondary-button {
+        width: 100%;
+    }
+
+    .qr-section textarea {
+        min-height: 110px;
+    }
+}
