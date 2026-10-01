@@ -1,14 +1,11 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>История чеков</title>
-    <link rel="stylesheet" href="{% static 'frontend/styles.css' %}">
-  </head>
-  <body>
-    <div id="root" data-page="cabinet"></div>
-    <script type="module" src="{% static 'frontend/app.js' %}"></script>
-  </body>
-</html>
+{% extends "base.html" %}
+{% block title %}
+    История чеков
+{% endblock %}
+{% block content %}
+    <div id="root"
+        data-page="cabinet"
+        data-user-name="{{ request.user.get_full_name|default:request.user.username }}"
+        data-user-email="{{ request.user.email }}">
+    </div>
+{% endblock %}

@@ -3,14 +3,25 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
     plugins: [react()],
+
     build: {
         outDir: "../backend/static/frontend",
         emptyOutDir: true,
+
         rollupOptions: {
+            input: "src/main.jsx",
+
             output: {
                 entryFileNames: "app.js",
                 chunkFileNames: "[name].js",
-                assetFileNames: "[name][extname]",
+
+                assetFileNames: (assetInfo) => {
+                    if (assetInfo.name?.endsWith(".css")) {
+                        return "styles.css";
+                    }
+
+                    return "[name][extname]";
+                },
             },
         },
     },

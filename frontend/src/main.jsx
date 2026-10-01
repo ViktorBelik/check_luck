@@ -11,9 +11,14 @@ const rootElement = document.getElementById("root");
 if (rootElement) {
     const page = rootElement.dataset.page;
 
+    const user = {
+        name: rootElement.dataset.userName || "",
+        email: rootElement.dataset.userEmail || "",
+    };
+
     const pages = {
-        register: <RegisterReceipt />,
-        cabinet: <Cabinet />,
+        register: <RegisterReceipt user={user} />,
+        cabinet: <Cabinet user={user} />,
     };
 
     createRoot(rootElement).render(
