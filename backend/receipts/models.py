@@ -14,6 +14,9 @@ class Receipt(models.Model):
             models.UniqueConstraint(
                 fields=["fn", "fd", "fp"],
                 name="unique_receipt_identifiers",
+                violation_error_message=(
+                    "Чек с такими реквизитами уже зарегистрирован."
+                ),
             ),
         ]
 
@@ -35,7 +38,7 @@ class Receipt(models.Model):
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
-        default=Status.PENDING,
+        default="pending",
     )
     rejection_reason = models.TextField(blank=True, default="",)
     created_at = models.DateTimeField(auto_now_add=True,)

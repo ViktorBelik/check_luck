@@ -281,9 +281,9 @@ function RegisterReceipt({ user }) {
                 <main className="register-page">
                     <section className="register-card">
                         <div className="register-result register-result--success">
-                            <SuccessIcon />
-
                             <div className="register-result__content">
+                                <SuccessIcon />
+
                                 <h2>
                                     Ваш чек загружен
                                 </h2>

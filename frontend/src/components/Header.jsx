@@ -68,17 +68,36 @@ function CabinetIcon() {
     );
 }
 
+function ReturnIcon() {
+    return (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M9.99998 13.28L5.65331 8.93333C5.13998 8.42 5.13998 7.58 5.65331 7.06667L9.99998 2.72"
+                stroke="#3E4552"
+                stroke-width="1.2"
+                stroke-miterlimit="10"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+        </svg>
+
+    );
+}
+
 function Header({ user }) {
     return (
         <header className="header">
             <div className="header__logo">ЧЕК НА УДАЧУ</div>
 
             <nav className="header__nav">
-                <a href="#" className="header__back">
-                    &#60; На сайт
-                </a>
 
                 <div className="header__links">
+                    
+                    <a href="#" className="header__back">
+                        <ReturnIcon />
+                        На сайт
+                    </a>
+
                     <a href="/receipts/cabinet/" className="header__active">
                         <CabinetIcon />
                         Личный кабинет
