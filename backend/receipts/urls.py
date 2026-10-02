@@ -2,7 +2,6 @@ from django.urls import path
 
 from receipts.views import (
     cabinet_page,
-    register_page,
     register_receipt,
     receipt_list,
 )

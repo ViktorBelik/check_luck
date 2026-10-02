@@ -102,7 +102,7 @@ class ReceiptApiTest(TestCase):
         )
 
     def test_unauthorized_user_cannot_get_receipts(self):
-        response = self.client.get("/api/receipts/")
+        response = self.client.get("/receipts/list/")
 
         self.assertEqual(response.status_code, 302)
 
@@ -112,7 +112,7 @@ class ReceiptApiTest(TestCase):
 
         self.client.force_login(self.user)
 
-        response = self.client.get("/api/receipts/")
+        response = self.client.get("/receipts/list/")
 
         self.assertEqual(response.status_code, 200)
 
@@ -128,7 +128,7 @@ class ReceiptApiTest(TestCase):
         self.client.force_login(self.user)
 
         response = self.client.get(
-            f"/api/receipts/?user_id={self.other_user.id}"
+            f"/receipts/list/?user_id={self.other_user.id}"
         )
 
         self.assertEqual(response.status_code, 200)
@@ -148,7 +148,7 @@ class ReceiptApiTest(TestCase):
 
         self.client.force_login(self.user)
 
-        response = self.client.get("/api/receipts/")
+        response = self.client.get("/receipts/list/")
 
         self.assertEqual(response.status_code, 200)
 

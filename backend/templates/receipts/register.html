@@ -4,12 +4,13 @@
     Регистрация чека
 {% endblock %}
 {% block content %}
-    {% csrf_token %}
+    <form id="csrf-form" style="display: none;">
+        {% csrf_token %}
+    </form>
     <div id="root"
-        data-page="register"
-        data-user-name="{{ request.user.get_full_name|default:request.user.username }}"
-        data-user-email="{{ request.user.email }}"
-        data-promo-start="{{ promo_start }}"
-        data-promo-end="{{ promo_end }}">
-    </div>
+         data-page="register"
+         data-user-name="{{ request.user.get_full_name|default:request.user.username }}"
+         data-user-email="{{ request.user.email }}"
+         data-promo-start="{{ promo_start }}"
+         data-promo-end="{{ promo_end }}"></div>
 {% endblock %}

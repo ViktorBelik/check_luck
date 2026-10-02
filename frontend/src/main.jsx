@@ -17,19 +17,13 @@ if (rootElement) {
         email: rootElement.dataset.userEmail || "",
     };
 
-    const emptyReceiptsImage =
-        rootElement.dataset.emptyReceiptsImage || "";
-
     const pages = {
         register: (
             <RegisterReceipt user={user} />
         ),
 
         cabinet: (
-            <Cabinet
-                user={user}
-                emptyReceiptsImage={emptyReceiptsImage}
-            />
+            <Cabinet user={user}/>
         ),
     };
 

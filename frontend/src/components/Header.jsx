@@ -75,11 +75,11 @@ function Header({ user }) {
 
             <nav className="header__nav">
                 <a href="#" className="header__back">
-                    ←&nbsp; На сайт
+                    &#60; На сайт
                 </a>
 
                 <div className="header__links">
-                    <a href="#" className="header__active">
+                    <a href="/receipts/cabinet/" className="header__active">
                         <CabinetIcon />
                         Личный кабинет
                     </a>
@@ -105,7 +105,7 @@ function Header({ user }) {
                     <NotificationIcon />
                 </button>
 
-                <div className="header__avatar">ЕИ</div>
+                <div className="header__avatar"><strong>{user?.name}</strong></div>
 
                 <div className="header__user-info">
                     <strong>{user?.name}</strong>

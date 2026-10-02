@@ -10,18 +10,6 @@ from .models import Receipt
 
 
 @login_required
-def register_page(request):
-    return render(
-        request,
-        "receipts/register.html",
-        {
-            "promo_start": settings.PROMO_START.isoformat(),
-            "promo_end": settings.PROMO_END.isoformat(),
-        },
-    )
-
-
-@login_required
 @require_http_methods(["GET", "POST"])
 def register_receipt(request):
     if request.method == "GET":
@@ -29,9 +17,11 @@ def register_receipt(request):
 
         return render(
             request,
-            "register.html",
+            "receipts/register.html",
             {
                 "form": form,
+                "promo_start": settings.PROMO_START.isoformat(),
+                "promo_end": settings.PROMO_END.isoformat(),
             },
         )
 
@@ -74,9 +64,9 @@ def cabinet_page(request):
 
 @login_required
 def receipt_list(request):
-    receipts = Receipt.objects.filter(
-        user=request.user
-    ).order_by("-purchase_datetime", "-created_at")
+    receipts = Receipt.objects.filter(user=request.user).order_by(
+        "-purchase_datetime", "-created_at"
+    )
 
     paginator = Paginator(receipts, 10)
 
@@ -86,9 +76,7 @@ def receipt_list(request):
     results = [
         {
             "id": receipt.id,
-            "purchase_date": receipt.purchase_datetime.strftime(
-                "%d.%m.%Y %H:%M"
-            ),
+            "purchase_date": receipt.purchase_datetime.strftime("%d.%m.%Y %H:%M"),
             "amount": str(receipt.amount),
             "status": receipt.status,
             "status_display": receipt.get_status_display(),

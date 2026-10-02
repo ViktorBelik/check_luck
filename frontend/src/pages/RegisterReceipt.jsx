@@ -229,7 +229,7 @@ function RegisterReceipt({ user }) {
         )?.value;
 
         try {
-            const response = await fetch("/register/", {
+            const response = await fetch("/receipts/register/", {
                 method: "POST",
                 headers: {
                     "X-CSRFToken": csrfToken,
@@ -285,11 +285,12 @@ function RegisterReceipt({ user }) {
 
                             <div className="register-result__content">
                                 <h2>
-                                    Чек успешно зарегистрирован
+                                    Ваш чек загружен
                                 </h2>
 
                                 <p>
-                                    Ваш чек отправлен на проверку.
+                                    Мы уже начали анализировать ваши покупки.
+                                    Это займёт всего парку секунд.
                                 </p>
 
                                 <button
@@ -297,10 +298,10 @@ function RegisterReceipt({ user }) {
                                     className="register-result__button"
                                     onClick={() => {
                                         window.location.href =
-                                            "/cabinet/";
+                                            "/receipts/cabinet/";
                                     }}
                                 >
-                                    Перейти в личный кабинет
+                                    На главную
                                 </button>
                             </div>
                         </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import Header from "../components/Header";
+import emptyReceiptsImage from "../assets/empty-receipts.png";
 
 
 function RegisterReceiptIcon() {
@@ -82,7 +83,7 @@ function Cabinet({ user, emptyReceiptsImage }) {
 
         try {
             const response = await fetch(
-                `/api/receipts/?page=${page}`,
+                `/receipts/list/?page=${page}`,
                 {
                     method: "GET",
                     headers: {
@@ -124,7 +125,7 @@ function Cabinet({ user, emptyReceiptsImage }) {
     }, []);
 
     function handleRegisterReceipt() {
-        window.location.href = "register/";
+        window.location.href = "/receipts/register/";
     }
 
     function handlePageChange(page) {
