@@ -28,19 +28,69 @@ export function parseReceiptQr(value) {
 
 
 function parseReceiptDate(value) {
-    if (!/^\d{8}T\d{4}$/.test(value)) {
-        throw new Error(
-            "Некорректная дата в QR-коде."
+    const normalizedValue = value.trim();
+
+    const formats = [
+        // 20261015T1200
+        /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})$/,
+
+        // 20261015T120000
+        /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})$/,
+
+        // 20261015 1200
+        /^(\d{4})(\d{2})(\d{2})[ ](\d{2})(\d{2})$/,
+
+        // 20261015 120000
+        /^(\d{4})(\d{2})(\d{2})[ ](\d{2})(\d{2})(\d{2})$/,
+
+        // 2026-10-15T12:00
+        /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/,
+
+        // 2026-10-15T12:00:00
+        /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/,
+
+        // 2026-10-15 12:00
+        /^(\d{4})-(\d{2})-(\d{2})[ ](\d{2}):(\d{2})$/,
+
+        // 2026-10-15 12:00:00
+        /^(\d{4})-(\d{2})-(\d{2})[ ](\d{2}):(\d{2}):(\d{2})$/,
+    ];
+
+    for (const format of formats) {
+        const match = normalizedValue.match(format);
+
+        if (!match) {
+            continue;
+        }
+
+        const [, year, month, day, hour, minute] = match;
+
+        const date = new Date(
+            Number(year),
+            Number(month) - 1,
+            Number(day),
+            Number(hour),
+            Number(minute)
         );
+
+        if (
+            date.getFullYear() !== Number(year) ||
+            date.getMonth() !== Number(month) - 1 ||
+            date.getDate() !== Number(day) ||
+            date.getHours() !== Number(hour) ||
+            date.getMinutes() !== Number(minute)
+        ) {
+            throw new Error(
+                "Некорректная дата в QR-коде."
+            );
+        }
+
+        return `${year}-${month}-${day}T${hour}:${minute}`;
     }
 
-    const year = value.slice(0, 4);
-    const month = value.slice(4, 6);
-    const day = value.slice(6, 8);
-    const hour = value.slice(9, 11);
-    const minute = value.slice(11, 13);
-
-    return `${year}-${month}-${day}T${hour}:${minute}`;
+    throw new Error(
+        "Некорректный формат даты в QR-коде."
+    );
 }
 
 

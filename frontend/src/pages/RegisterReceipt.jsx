@@ -1,4 +1,6 @@
 import { useState } from "react";
+import jsQR from "jsqr";
+import { parseReceiptQr } from "../utils/qrParser";
 
 import Header from "../components/Header";
 
@@ -169,6 +171,79 @@ function RegisterReceipt({ user }) {
         }));
 
         setServerError("");
+    }
+
+    async function handleQrUpload(event) {
+        const file = event.target.files?.[0];
+
+        if (!file) {
+            return;
+        }
+
+        setServerError("");
+        setErrors({});
+
+        const imageUrl = URL.createObjectURL(file);
+        const image = new Image();
+
+        image.onload = () => {
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+
+            canvas.width = image.naturalWidth;
+            canvas.height = image.naturalHeight;
+
+            context.drawImage(
+                image,
+                0,
+                0,
+                image.naturalWidth,
+                image.naturalHeight
+            );
+
+            const imageData = context.getImageData(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+            const qrCode = jsQR(
+                imageData.data,
+                imageData.width,
+                imageData.height
+            );
+
+            URL.revokeObjectURL(imageUrl);
+
+            if (!qrCode) {
+                setServerError(
+                    "Не удалось распознать QR-код. Загрузите изображение чека с читаемым QR-кодом."
+                );
+                return;
+            }
+
+            try {
+                const parsedData = parseReceiptQr(qrCode.data);
+
+                setFormData((current) => ({
+                    ...current,
+                    ...parsedData,
+                }));
+            } catch (error) {
+                setServerError(error.message);
+            }
+        };
+
+        image.onerror = () => {
+            URL.revokeObjectURL(imageUrl);
+
+            setServerError(
+                "Не удалось загрузить изображение QR-кода."
+            );
+        };
+
+        image.src = imageUrl;
     }
 
     function validateForm() {
@@ -359,6 +434,22 @@ function RegisterReceipt({ user }) {
                                 )?.value || ""
                             }
                         />
+
+                        <div className="qr-upload">
+                            <label className="qr-upload__label">
+                                Загрузить QR-код
+                            </label>
+
+                            <input
+                                type="file"
+                                accept="image/png,image/jpeg,image/webp"
+                                onChange={handleQrUpload}
+                            />
+
+                            <small className="qr-upload__hint">
+                                Загрузите изображение QR-кода с чека — данные заполнятся автоматически.
+                            </small>
+                        </div>
 
                         <label className="form-field">
                             <span>ФН</span>

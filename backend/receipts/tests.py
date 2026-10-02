@@ -75,6 +75,120 @@ class ReceiptFormTest(TestCase):
 
 
 class ReceiptApiTest(TestCase):
+    
+    class ReceiptRegistrationTest(TestCase):
+        def setUp(self):
+            self.client = Client()
+
+            self.user = User.objects.create_user(
+                username="registration_user",
+                password="password123",
+            )
+
+            self.valid_data = {
+                "fn": "555555555",
+                "fd": "55555",
+                "fp": "555555555",
+                "purchase_datetime": "2026-10-15 12:00",
+                "amount": "1500.00",
+            }
+
+        def test_successful_registration(self):
+            self.client.force_login(self.user)
+
+            response = self.client.post(
+                "/receipts/register/",
+                data=self.valid_data,
+            )
+
+            self.assertEqual(response.status_code, 200)
+
+            data = response.json()
+
+            self.assertTrue(data["success"])
+            self.assertIn("receipt_id", data)
+
+            receipt = Receipt.objects.get(id=data["receipt_id"])
+
+            self.assertEqual(receipt.user, self.user)
+            self.assertEqual(receipt.fn, self.valid_data["fn"])
+            self.assertEqual(receipt.fd, self.valid_data["fd"])
+            self.assertEqual(receipt.fp, self.valid_data["fp"])
+            self.assertEqual(receipt.amount, Decimal("1500.00"))
+            self.assertEqual(
+                receipt.status,
+                Receipt.Status.PENDING,
+            )
+
+        def test_registration_with_invalid_amount(self):
+            self.client.force_login(self.user)
+
+            data = self.valid_data.copy()
+            data["amount"] = "999.99"
+
+            response = self.client.post(
+                "/receipts/register/",
+                data=data,
+            )
+
+            self.assertEqual(response.status_code, 400)
+
+            response_data = response.json()
+
+            self.assertFalse(response_data["success"])
+            self.assertIn("amount", response_data["errors"])
+
+            self.assertEqual(
+                Receipt.objects.filter(user=self.user).count(),
+                0,
+            )
+
+        def test_registration_with_duplicate_receipt(self):
+            Receipt.objects.create(
+                user=self.user,
+                fn=self.valid_data["fn"],
+                fd=self.valid_data["fd"],
+                fp=self.valid_data["fp"],
+                purchase_datetime="2026-10-15T12:00:00+03:00",
+                amount=Decimal("1500.00"),
+            )
+
+            self.client.force_login(self.user)
+
+            response = self.client.post(
+                "/receipts/register/",
+                data=self.valid_data,
+            )
+
+            self.assertEqual(response.status_code, 400)
+
+            response_data = response.json()
+
+            self.assertFalse(response_data["success"])
+            self.assertIn("__all__", response_data["errors"])
+
+            self.assertEqual(
+                Receipt.objects.filter(
+                    fn=self.valid_data["fn"],
+                    fd=self.valid_data["fd"],
+                    fp=self.valid_data["fp"],
+                ).count(),
+                1,
+            )
+
+        def test_unauthorized_registration(self):
+            response = self.client.post(
+                "/receipts/register/",
+                data=self.valid_data,
+            )
+
+            self.assertEqual(response.status_code, 302)
+
+            self.assertEqual(
+                Receipt.objects.count(),
+                0,
+            )
+
     def setUp(self):
         self.client = Client()
 

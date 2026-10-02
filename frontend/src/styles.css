@@ -558,11 +558,7 @@ body {
     display: grid;
 
     grid-template-columns:
-        minmax(180px, 1.4fr)
-        minmax(110px, 0.8fr)
-        minmax(110px, 0.8fr)
-        minmax(150px, 1fr)
-        minmax(200px, 1.5fr);
+        minmax(180px, 1.4fr) minmax(110px, 0.8fr) minmax(110px, 0.8fr) minmax(150px, 1fr) minmax(200px, 1.5fr);
 
     align-items: center;
     column-gap: 16px;
@@ -937,6 +933,43 @@ body {
     cursor: pointer;
 }
 
+.qr-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    padding: 16px;
+
+    border: 1px dashed #cfd3dc;
+    border-radius: 8px;
+
+    background: #fafbfc;
+}
+
+.qr-upload__label {
+    color: #3e4552;
+
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 600;
+}
+
+.qr-upload input[type="file"] {
+    width: 100%;
+
+    color: #5f6672;
+
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.qr-upload__hint {
+    color: #8a8f99;
+
+    font-size: 12px;
+    line-height: 17px;
+}
+
 
 @media (max-width: 700px) {
     .header {
@@ -1044,12 +1077,96 @@ body {
     }
 
     .receipts-table {
-        overflow-x: auto;
+        width: 100%;
     }
 
-    .receipts-table__header,
+    .receipts-table__header {
+        display: none;
+    }
+
     .receipts-table__row {
-        min-width: 900px;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+
+        min-height: 0;
+        padding: 16px;
+        border: 1px solid #e8e9ed;
+        border-radius: 12px;
+        background: #ffffff;
+    }
+
+    .receipts-table__row+.receipts-table__row {
+        margin-top: 12px;
+    }
+
+    .receipts-table__row:nth-child(even) {
+        background: #ffffff;
+    }
+
+    .receipts-table__cell {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+
+        width: 100%;
+    }
+
+    .receipts-table__purchase {
+        justify-content: flex-start;
+        padding-bottom: 4px;
+    }
+
+    .receipts-table__amount::before {
+        content: "Сумма";
+        color: #7b818c;
+        font-size: 13px;
+        font-weight: 400;
+    }
+
+    .receipts-table__date::before {
+        content: "Дата регистрации";
+        color: #7b818c;
+        font-size: 13px;
+        font-weight: 400;
+    }
+
+    .receipts-table__information {
+        align-items: flex-start;
+        padding-top: 12px;
+        border-top: 1px solid #e8e9ed;
+        color: #7b818c;
+    }
+
+    .receipts-table__information::before {
+        content: "Информация";
+        flex: 0 0 auto;
+        color: #7b818c;
+        font-size: 13px;
+    }
+
+    .receipts-table__information span {
+        text-align: right;
+    }
+
+    .receipts-table__purchase strong {
+        font-size: 14px;
+    }
+
+    .receipts-table__amount {
+        font-size: 14px;
+    }
+
+    .receipts-table__date {
+        font-size: 13px;
+    }
+
+    .receipts-table__cell:has(.status-badge)::before {
+        content: "Статус";
+        color: #7b818c;
+        font-size: 13px;
     }
 
     .receipt-item {
@@ -1063,6 +1180,12 @@ body {
 
     .receipt-item__reason {
         max-width: 180px;
+    }
+
+    .cabinet-container {
+        min-height: 0;
+        padding: 20px 16px;
+        border-radius: 14px;
     }
 
     .cabinet-empty {
