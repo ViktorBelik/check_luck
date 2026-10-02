@@ -23,7 +23,7 @@ if (rootElement) {
         ),
 
         cabinet: (
-            <Cabinet user={user}/>
+            <Cabinet user={user} emptyReceiptsImage={rootElement.dataset.emptyReceiptsImage}/>
         ),
     };
 

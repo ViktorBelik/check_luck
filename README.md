@@ -94,13 +94,13 @@ docker compose up --build
 Если миграции не выполняются автоматически:
 
 ```bash
-docker compose exec backend python manage.py migrate
+docker compose exec web python manage.py migrate
 ```
 
 ### 5. Создание пользователя
 
 ```bash
-docker compose exec backend python manage.py createsuperuser
+docker compose exec web python manage.py createsuperuser
 ```
 
 После этого приложение доступно через настроенный Docker-порт.
@@ -186,7 +186,7 @@ API возвращает только чеки текущего авторизо
 Backend-тесты запускаются внутри контейнера:
 
 ```bash
-docker compose exec backend python manage.py test receipts
+docker compose exec web python manage.py test receipts
 ```
 
 Тестами покрыты:

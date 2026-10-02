@@ -64,10 +64,6 @@ def cabinet_page(request):
 
 @login_required
 def receipt_list(request):
-    receipts = Receipt.objects.filter(user=request.user).order_by(
-        "-purchase_datetime", "-created_at"
-    )
-
     sort_field = request.GET.get("sort", "purchase_date")
     sort_direction = request.GET.get("order", "desc")
 

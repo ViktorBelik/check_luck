@@ -352,56 +352,6 @@ body {
     border-color: #f04d4d;
 }
 
-.datetime-field {
-    width: 100%;
-    height: 52px;
-
-    display: flex;
-    align-items: center;
-
-    padding: 0 14px;
-
-    border: 1px solid #d9dce2;
-    border-radius: 8px;
-
-    background: #ffffff;
-}
-
-.datetime-field:focus-within {
-    border-color: #524fe5;
-    box-shadow: 0 0 0 3px rgba(82, 79, 229, 0.1);
-}
-
-.datetime-field input {
-    height: 100%;
-
-    padding: 0;
-    border: 0;
-    outline: 0;
-
-    background: transparent;
-
-    color: #3e4552;
-    font-family: inherit;
-    font-size: 16px;
-}
-
-.datetime-field input[type="date"] {
-    flex: 1;
-}
-
-.datetime-field input[type="time"] {
-    width: 100px;
-}
-
-.datetime-field__divider {
-    margin: 0 12px;
-
-    color: #a1a6af;
-    font-size: 18px;
-}
-
-
 .cabinet-page {
     min-height: calc(100vh - 76px);
     padding: 28px 24px 72px;
@@ -435,36 +385,6 @@ body {
     font-size: 30px;
     line-height: 38px;
     font-weight: 700;
-}
-
-.cabinet-description {
-    margin: 0;
-    color: #7b818c;
-    font-size: 16px;
-    line-height: 24px;
-}
-
-.cabinet-register-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    min-width: 230px;
-    height: 48px;
-    padding: 0 20px;
-    border: 0;
-    border-radius: 8px;
-    background: #524fe5;
-    color: #ffffff;
-    font-family: inherit;
-    font-size: 15px;
-    line-height: 20px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.cabinet-register-button:hover {
-    background: #4744d4;
 }
 
 .cabinet-state {
@@ -692,49 +612,6 @@ body {
     line-height: 18px;
 }
 
-.receipts-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.receipt-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    padding: 20px 24px;
-    background: #ffffff;
-    border: 1px solid #e8e9ed;
-    border-radius: 12px;
-}
-
-.receipt-item__main {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.receipt-item__date {
-    color: #272c35;
-    font-size: 16px;
-    line-height: 22px;
-    font-weight: 600;
-}
-
-.receipt-item__amount {
-    color: #7b818c;
-    font-size: 14px;
-    line-height: 20px;
-}
-
-.receipt-item__status {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
-}
-
 .status-badge {
     display: inline-flex;
     align-items: center;
@@ -760,15 +637,6 @@ body {
 .status-badge--rejected {
     background: #ffeded;
     color: #d43f3f;
-}
-
-.receipt-item__reason {
-    max-width: 320px;
-    margin: 0;
-    color: #7b818c;
-    font-size: 13px;
-    line-height: 18px;
-    text-align: right;
 }
 
 .cabinet-empty {
@@ -1004,10 +872,6 @@ body {
         border-radius: 16px;
     }
 
-    .datetime-field input[type="time"] {
-        width: 90px;
-    }
-
     .register-card__title {
         font-size: 26px;
         line-height: 34px;
@@ -1167,19 +1031,6 @@ body {
         content: "Статус";
         color: #7b818c;
         font-size: 13px;
-    }
-
-    .receipt-item {
-        align-items: flex-start;
-        padding: 16px;
-    }
-
-    .receipt-item__status {
-        align-items: flex-end;
-    }
-
-    .receipt-item__reason {
-        max-width: 180px;
     }
 
     .cabinet-container {
