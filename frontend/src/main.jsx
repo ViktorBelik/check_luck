@@ -6,6 +6,7 @@ import Cabinet from "./pages/Cabinet";
 
 import "./styles.css";
 
+
 const rootElement = document.getElementById("root");
 
 if (rootElement) {
@@ -16,9 +17,20 @@ if (rootElement) {
         email: rootElement.dataset.userEmail || "",
     };
 
+    const emptyReceiptsImage =
+        rootElement.dataset.emptyReceiptsImage || "";
+
     const pages = {
-        register: <RegisterReceipt user={user} />,
-        cabinet: <Cabinet user={user} />,
+        register: (
+            <RegisterReceipt user={user} />
+        ),
+
+        cabinet: (
+            <Cabinet
+                user={user}
+                emptyReceiptsImage={emptyReceiptsImage}
+            />
+        ),
     };
 
     createRoot(rootElement).render(

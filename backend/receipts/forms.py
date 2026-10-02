@@ -15,23 +15,35 @@ class ReceiptForm(forms.ModelForm):
             "purchase_datetime",
             "amount",
         ]
+        widgets = {
+            "purchase_datetime": forms.DateTimeInput(
+                attrs={
+                    "type": "datetime-local",
+                }
+            ),
+            "amount": forms.NumberInput(
+                attrs={
+                    "min": "1000",
+                    "step": "0.01",
+                }
+            ),
+        }
 
     def clean_purchase_datetime(self):
-        purchase_datetime = self.cleaned_data["purchase_datetime"]
+        value = self.cleaned_data["purchase_datetime"]
 
-        if timezone.is_naive(purchase_datetime):
-            purchase_datetime = timezone.make_aware(purchase_datetime)
+        if timezone.is_naive(value):
+            value = timezone.make_aware(value)
 
-        if not (
-            settings.PROMO_START
-            <= purchase_datetime
-            <= settings.PROMO_END
-        ):
+        promo_start = settings.PROMO_START
+        promo_end = settings.PROMO_END
+
+        if value < promo_start or value > promo_end:
             raise forms.ValidationError(
-                "Дата покупки находится вне периода акции."
+                "Дата покупки должна находиться в периоде акции."
             )
 
-        return purchase_datetime
+        return value
 
     def clean_amount(self):
         amount = self.cleaned_data["amount"]
@@ -51,15 +63,15 @@ class ReceiptForm(forms.ModelForm):
         fp = cleaned_data.get("fp")
 
         if fn and fd and fp:
-            receipt_exists = Receipt.objects.filter(
+            exists = Receipt.objects.filter(
                 fn=fn,
                 fd=fd,
                 fp=fp,
             ).exists()
 
-            if receipt_exists:
+            if exists:
                 raise forms.ValidationError(
-                    "Такой чек уже зарегистрирован."
+                    "Чек с такими реквизитами уже зарегистрирован."
                 )
 
         return cleaned_data

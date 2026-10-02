@@ -1,8 +1,10 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}
     Регистрация чека
 {% endblock %}
 {% block content %}
+    {% csrf_token %}
     <div id="root"
         data-page="register"
         data-user-name="{{ request.user.get_full_name|default:request.user.username }}"

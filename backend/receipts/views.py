@@ -3,7 +3,9 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.conf import settings
+from django.views.decorators.http import require_http_methods
 
+from .forms import ReceiptForm
 from .models import Receipt
 
 
@@ -16,6 +18,49 @@ def register_page(request):
             "promo_start": settings.PROMO_START.isoformat(),
             "promo_end": settings.PROMO_END.isoformat(),
         },
+    )
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def register_receipt(request):
+    if request.method == "GET":
+        form = ReceiptForm()
+
+        return render(
+            request,
+            "register.html",
+            {
+                "form": form,
+            },
+        )
+
+    form = ReceiptForm(request.POST)
+
+    if form.is_valid():
+        receipt = form.save(commit=False)
+        receipt.user = request.user
+        receipt.status = receipt.Status.PENDING
+        receipt.save()
+
+        return JsonResponse(
+            {
+                "success": True,
+                "receipt_id": receipt.id,
+            }
+        )
+
+    errors = {}
+
+    for field, field_errors in form.errors.items():
+        errors[field] = field_errors.get_json_data()
+
+    return JsonResponse(
+        {
+            "success": False,
+            "errors": errors,
+        },
+        status=400,
     )
 
 

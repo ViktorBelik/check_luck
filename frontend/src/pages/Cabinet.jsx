@@ -1,48 +1,7 @@
+import { useEffect, useState } from "react";
+
 import Header from "../components/Header";
-import emptyReceiptsImage from "../assets/empty-receipts.png";
 
-function Cabinet({ user }) {
-    return (
-        <>
-            <Header user={user} />
-
-            <main className="cabinet-page">
-                <div className="container">
-                    <header className="page-header">
-                        <h1>Личный кабинет</h1>
-                    </header>
-
-                    <div className="cabinet-empty">
-                        <img
-                            src={emptyReceiptsImage}
-                            alt=""
-                            className="cabinet-empty__image"
-                        />
-
-                        <h2 className="cabinet-empty__title">
-                            У вас пока нет чеков
-                        </h2>
-
-                        <p className="cabinet-empty__description">
-                            Зарегистрируйте чек, чтобы принять участие в акции
-                        </p>
-
-                        <button type="button"
-                            className="cabinet-empty__button"
-                            onClick={() => {
-                                window.location.href = "/receipts/register/";
-                            }}
-                        >
-                            <RegisterReceiptIcon />
-                            <span>Зарегистрировать чек</span>
-                        </button>
-                    </div>
-
-                </div>
-            </main>
-        </>
-    );
-}
 
 function RegisterReceiptIcon() {
     return (
@@ -86,5 +45,278 @@ function RegisterReceiptIcon() {
     );
 }
 
+
+function StatusBadge({ status }) {
+    const statusClasses = {
+        pending: "status-badge status-badge--pending",
+        accepted: "status-badge status-badge--accepted",
+        rejected: "status-badge status-badge--rejected",
+    };
+
+    return (
+        <span className={statusClasses[status] || "status-badge"}>
+            {status === "pending" && "На проверке"}
+            {status === "accepted" && "Принят"}
+            {status === "rejected" && "Отклонен"}
+        </span>
+    );
+}
+
+
+function Cabinet({ user, emptyReceiptsImage }) {
+    const [receipts, setReceipts] = useState([]);
+    const [pagination, setPagination] = useState({
+        page: 1,
+        pages: 1,
+        total: 0,
+        has_next: false,
+        has_previous: false,
+    });
+
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    async function loadReceipts(page = 1) {
+        setIsLoading(true);
+        setError("");
+
+        try {
+            const response = await fetch(
+                `/api/receipts/?page=${page}`,
+                {
+                    method: "GET",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(
+                    "Не удалось загрузить чеки."
+                );
+            }
+
+            const data = await response.json();
+
+            setReceipts(data.results || []);
+
+            setPagination(
+                data.pagination || {
+                    page: 1,
+                    pages: 1,
+                    total: 0,
+                    has_next: false,
+                    has_previous: false,
+                }
+            );
+        } catch {
+            setError(
+                "Не удалось загрузить историю чеков. Попробуйте обновить страницу."
+            );
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        loadReceipts();
+    }, []);
+
+    function handleRegisterReceipt() {
+        window.location.href = "register/";
+    }
+
+    function handlePageChange(page) {
+        if (page < 1 || page > pagination.pages) {
+            return;
+        }
+
+        loadReceipts(page);
+    }
+
+    return (
+        <>
+            <Header user={user} />
+
+            <main className="cabinet-page">
+                <div className="cabinet-container">
+                    <div className="cabinet-header">
+                        <div>
+                            <h1 className="cabinet-title">
+                                Мои чеки
+                            </h1>
+
+                            <p className="cabinet-description">
+                                История зарегистрированных чеков
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            className="cabinet-register-button"
+                            onClick={handleRegisterReceipt}
+                        >
+                            <RegisterReceiptIcon />
+
+                            <span>
+                                Зарегистрировать чек
+                            </span>
+                        </button>
+                    </div>
+
+                    {isLoading && (
+                        <div className="cabinet-state">
+                            Загрузка чеков...
+                        </div>
+                    )}
+
+                    {!isLoading && error && (
+                        <div className="cabinet-error">
+                            {error}
+                        </div>
+                    )}
+
+                    {!isLoading &&
+                        !error &&
+                        receipts.length === 0 && (
+                            <div className="cabinet-empty">
+                                {emptyReceiptsImage && (
+                                    <img
+                                        src={emptyReceiptsImage}
+                                        alt=""
+                                        className="cabinet-empty__image"
+                                    />
+                                )}
+
+                                <h2 className="cabinet-empty__title">
+                                    У вас пока нет чеков
+                                </h2>
+
+                                <p className="cabinet-empty__description">
+                                    Зарегистрируйте чек, чтобы
+                                    принять участие в акции
+                                </p>
+
+                                <button
+                                    type="button"
+                                    className="cabinet-empty__button"
+                                    onClick={handleRegisterReceipt}
+                                >
+                                    <RegisterReceiptIcon />
+
+                                    <span>
+                                        Зарегистрировать чек
+                                    </span>
+                                </button>
+                            </div>
+                        )}
+
+                    {!isLoading &&
+                        !error &&
+                        receipts.length > 0 && (
+                            <>
+                                <div className="receipts-list">
+                                    {receipts.map((receipt) => (
+                                        <article
+                                            key={receipt.id}
+                                            className="receipt-item"
+                                        >
+                                            <div className="receipt-item__main">
+                                                <div className="receipt-item__date">
+                                                    {receipt.purchase_date}
+                                                </div>
+
+                                                <div className="receipt-item__amount">
+                                                    {receipt.amount} ₽
+                                                </div>
+                                            </div>
+
+                                            <div className="receipt-item__status">
+                                                <StatusBadge
+                                                    status={
+                                                        receipt.status
+                                                    }
+                                                />
+
+                                                {receipt.status ===
+                                                    "rejected" &&
+                                                    receipt.rejection_reason && (
+                                                        <p className="receipt-item__reason">
+                                                            {
+                                                                receipt.rejection_reason
+                                                            }
+                                                        </p>
+                                                    )}
+                                            </div>
+                                        </article>
+                                    ))}
+                                </div>
+
+                                {pagination.pages > 1 && (
+                                    <div className="pagination">
+                                        <button
+                                            type="button"
+                                            className="pagination__button"
+                                            disabled={
+                                                !pagination.has_previous
+                                            }
+                                            onClick={() =>
+                                                handlePageChange(
+                                                    pagination.page - 1
+                                                )
+                                            }
+                                        >
+                                            ←
+                                        </button>
+
+                                        {Array.from(
+                                            {
+                                                length: pagination.pages,
+                                            },
+                                            (_, index) => index + 1
+                                        ).map((page) => (
+                                            <button
+                                                key={page}
+                                                type="button"
+                                                className={
+                                                    page ===
+                                                    pagination.page
+                                                        ? "pagination__button pagination__button--active"
+                                                        : "pagination__button"
+                                                }
+                                                onClick={() =>
+                                                    handlePageChange(
+                                                        page
+                                                    )
+                                                }
+                                            >
+                                                {page}
+                                            </button>
+                                        ))}
+
+                                        <button
+                                            type="button"
+                                            className="pagination__button"
+                                            disabled={
+                                                !pagination.has_next
+                                            }
+                                            onClick={() =>
+                                                handlePageChange(
+                                                    pagination.page + 1
+                                                )
+                                            }
+                                        >
+                                            →
+                                        </button>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                </div>
+            </main>
+        </>
+    );
+}
 
 export default Cabinet;
