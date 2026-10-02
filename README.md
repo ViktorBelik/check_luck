@@ -26,7 +26,7 @@ check_luck/
 │   ├── config/              # настройки и маршрутизация Django
 │   ├── receipts/            # приложение для работы с чеками
 │   │   ├── migrations/
-│   │   ├── tests/
+│   │   ├── tests.py
 │   │   ├── forms.py
 │   │   ├── models.py
 │   │   ├── urls.py
