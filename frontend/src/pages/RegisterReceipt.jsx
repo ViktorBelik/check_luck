@@ -251,14 +251,26 @@ function RegisterReceipt({ user }) {
 
         if (!formData.fn.trim()) {
             newErrors.fn = "Введите ФН";
+        } else if (!/^\d+$/.test(formData.fn.trim())) {
+            newErrors.fn = "ФН должен содержать только цифры";
+        } else if (formData.fn.trim().length > 32) {
+            newErrors.fn = "ФН должен содержать не более 32 цифр";
         }
 
         if (!formData.fd.trim()) {
             newErrors.fd = "Введите ФД";
+        } else if (!/^\d+$/.test(formData.fd.trim())) {
+            newErrors.fd = "ФД должен содержать только цифры";
+        } else if (formData.fd.trim().length > 32) {
+            newErrors.fd = "ФД должен содержать не более 32 цифр";
         }
 
         if (!formData.fp.trim()) {
             newErrors.fp = "Введите ФП";
+        } else if (!/^\d+$/.test(formData.fp.trim())) {
+            newErrors.fp = "ФП должен содержать только цифры";
+        } else if (formData.fp.trim().length > 32) {
+            newErrors.fp = "ФП должен содержать не более 32 цифр";
         }
 
         if (!formData.purchase_datetime) {
