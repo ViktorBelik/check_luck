@@ -1,3 +1,5 @@
+import defaultUserImage from "../assets/default_user.png";
+
 function NotificationIcon() {
     return (
         <svg
@@ -92,7 +94,7 @@ function Header({ user }) {
             <nav className="header__nav">
 
                 <div className="header__links">
-                    
+
                     <a href="#" className="header__back">
                         <ReturnIcon />
                         На сайт
@@ -124,7 +126,13 @@ function Header({ user }) {
                     <NotificationIcon />
                 </button>
 
-                <div className="header__avatar"><strong>{user?.name}</strong></div>
+                <div className="header-avatar">
+                    <img
+                        src={user?.avatar || defaultUserImage}
+                        alt=""
+                        className="header-avatar__image"
+                    />
+                </div>
 
                 <div className="header__user-info">
                     <strong>{user?.name}</strong>

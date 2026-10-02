@@ -245,9 +245,13 @@ function RegisterReceipt({ user }) {
                 Object.entries(result.errors || {}).forEach(
                     ([field, fieldErrors]) => {
                         if (Array.isArray(fieldErrors)) {
-                            backendErrors[field] = fieldErrors
-                                .map((error) => error.message)
-                                .join(" ");
+                            const messages = fieldErrors.map(
+                                (error) => error.message
+                            );
+
+                            backendErrors[field] = [
+                                ...new Set(messages),
+                            ].join(" ");
                         }
                     }
                 );
@@ -278,32 +282,31 @@ function RegisterReceipt({ user }) {
             <>
                 <Header user={user} />
 
-                <main className="register-page">
-                    <section className="register-card">
-                        <div className="register-result register-result--success">
-                            <div className="register-result__content">
-                                <SuccessIcon />
+                <main className="register-page register-page--success">
+                    <section className="register-result register-result--success">
+                        <div className="register-result__content">
+                            <SuccessIcon />
 
-                                <h2>
-                                    Ваш чек загружен
-                                </h2>
+                            <h2>
+                                Ваш чек загружен
+                            </h2>
 
-                                <p>
-                                    Мы уже начали анализировать ваши покупки.
-                                    Это займёт всего парку секунд.
-                                </p>
+                            <p>
+                                Мы уже начали анализировать ваши покупки.
+                                <br />
+                                Это займёт всего пару секунд.
+                            </p>
 
-                                <button
-                                    type="button"
-                                    className="register-result__button"
-                                    onClick={() => {
-                                        window.location.href =
-                                            "/receipts/cabinet/";
-                                    }}
-                                >
-                                    На главную
-                                </button>
-                            </div>
+                            <button
+                                type="button"
+                                className="register-result__button"
+                                onClick={() => {
+                                    window.location.href =
+                                        "/receipts/cabinet/";
+                                }}
+                            >
+                                На главную
+                            </button>
                         </div>
                     </section>
                 </main>

@@ -64,7 +64,7 @@ function StatusBadge({ status }) {
 }
 
 
-function Cabinet({ user, emptyReceiptsImage }) {
+function Cabinet({ user }) {
     const [receipts, setReceipts] = useState([]);
     const [pagination, setPagination] = useState({
         page: 1,
@@ -73,6 +73,8 @@ function Cabinet({ user, emptyReceiptsImage }) {
         has_next: false,
         has_previous: false,
     });
+    const [sortField, setSortField] = useState("purchase_date");
+    const [sortDirection, setSortDirection] = useState("desc");
 
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
@@ -83,7 +85,7 @@ function Cabinet({ user, emptyReceiptsImage }) {
 
         try {
             const response = await fetch(
-                `/receipts/list/?page=${page}`,
+                `/api/receipts/?page=${page}&sort=${sortField}&order=${sortDirection}`,
                 {
                     method: "GET",
                     headers: {
@@ -120,9 +122,21 @@ function Cabinet({ user, emptyReceiptsImage }) {
         }
     }
 
+    function handleSort(field) {
+        if (sortField === field) {
+            setSortDirection((currentDirection) =>
+                currentDirection === "asc" ? "desc" : "asc"
+            );
+            return;
+        }
+
+        setSortField(field);
+        setSortDirection("asc");
+    }
+
     useEffect(() => {
-        loadReceipts();
-    }, []);
+        loadReceipts(1);
+    }, [sortField, sortDirection]);
 
     function handleRegisterReceipt() {
         window.location.href = "/receipts/register/";
@@ -145,25 +159,14 @@ function Cabinet({ user, emptyReceiptsImage }) {
                     <div className="cabinet-header">
                         <div>
                             <h1 className="cabinet-title">
-                                Мои чеки
+                                История чеков
                             </h1>
-
-                            <p className="cabinet-description">
-                                История зарегистрированных чеков
-                            </p>
                         </div>
 
-                        <button
-                            type="button"
-                            className="cabinet-register-button"
-                            onClick={handleRegisterReceipt}
-                        >
-                            <RegisterReceiptIcon />
+                        <div className="cabinet-count">
+                            Чеков внесено: <strong>{pagination.total} шт.</strong>
+                        </div>
 
-                            <span>
-                                Зарегистрировать чек
-                            </span>
-                        </button>
                     </div>
 
                     {isLoading && (
@@ -217,40 +220,136 @@ function Cabinet({ user, emptyReceiptsImage }) {
                         !error &&
                         receipts.length > 0 && (
                             <>
-                                <div className="receipts-list">
-                                    {receipts.map((receipt) => (
-                                        <article
-                                            key={receipt.id}
-                                            className="receipt-item"
+                                <div className="receipts-table">
+                                    <div className="receipts-table__header">
+                                        <button
+                                            type="button"
+                                            className="receipts-table__sort"
+                                            onClick={() => handleSort("purchase_date")}
                                         >
-                                            <div className="receipt-item__main">
-                                                <div className="receipt-item__date">
-                                                    {receipt.purchase_date}
+                                            <span>Дата покупки</span>
+                                            <span className="receipts-table__sort-icon">
+                                                {sortField === "purchase_date"
+                                                    ? sortDirection === "asc"
+                                                        ? "↑"
+                                                        : "↓"
+                                                    : "↕"}
+                                            </span>
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            className="receipts-table__sort"
+                                            onClick={() => handleSort("status")}
+                                        >
+                                            <span>Статус</span>
+                                            <span className="receipts-table__sort-icon">
+                                                {sortField === "status"
+                                                    ? sortDirection === "asc"
+                                                        ? "↑"
+                                                        : "↓"
+                                                    : "↕"}
+                                            </span>
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            className="receipts-table__sort"
+                                            onClick={() => handleSort("amount")}
+                                        >
+                                            <span>Сумма чека</span>
+                                            <span className="receipts-table__sort-icon">
+                                                {sortField === "amount"
+                                                    ? sortDirection === "asc"
+                                                        ? "↑"
+                                                        : "↓"
+                                                    : "↕"}
+                                            </span>
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            className="receipts-table__sort"
+                                            onClick={() => handleSort("registration_date")}
+                                        >
+                                            <span>Дата регистрации</span>
+                                            <span className="receipts-table__sort-icon">
+                                                {sortField === "registration_date"
+                                                    ? sortDirection === "asc"
+                                                        ? "↑"
+                                                        : "↓"
+                                                    : "↕"}
+                                            </span>
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            className="receipts-table__sort"
+                                            onClick={() => handleSort("information")}
+                                        >
+                                            <span>Информация</span>
+                                            <span className="receipts-table__sort-icon">
+                                                {sortField === "information"
+                                                    ? sortDirection === "asc"
+                                                        ? "↑"
+                                                        : "↓"
+                                                    : "↕"}
+                                            </span>
+                                        </button>
+                                    </div>
+
+                                    {receipts.map((receipt) => (
+                                        <div
+                                            key={receipt.id}
+                                            className="receipts-table__row"
+                                        >
+                                            <div className="receipts-table__cell receipts-table__purchase">
+                                                <div className="receipt-qr">
+                                                    QR
                                                 </div>
 
-                                                <div className="receipt-item__amount">
-                                                    {receipt.amount} ₽
+                                                <div>
+                                                    <strong>
+                                                        {receipt.purchase_date}
+                                                    </strong>
                                                 </div>
                                             </div>
 
-                                            <div className="receipt-item__status">
+                                            <div className="receipts-table__cell">
                                                 <StatusBadge
-                                                    status={
-                                                        receipt.status
-                                                    }
+                                                    status={receipt.status}
                                                 />
-
-                                                {receipt.status ===
-                                                    "rejected" &&
-                                                    receipt.rejection_reason && (
-                                                        <p className="receipt-item__reason">
-                                                            {
-                                                                receipt.rejection_reason
-                                                            }
-                                                        </p>
-                                                    )}
                                             </div>
-                                        </article>
+
+                                            <div className="receipts-table__cell receipts-table__amount">
+                                                {receipt.amount} ₽
+                                            </div>
+
+                                            <div className="receipts-table__cell receipts-table__date">
+                                                {receipt.registration_date}
+                                            </div>
+
+                                            <div className="receipts-table__cell receipts-table__information">
+                                                {receipt.status === "pending" && (
+                                                    <span>
+                                                        Чек находится на проверке
+                                                    </span>
+                                                )}
+
+                                                {receipt.status === "accepted" && (
+                                                    <span>
+                                                        Чек принят
+                                                    </span>
+                                                )}
+
+                                                {receipt.status === "rejected" && (
+                                                    <span>
+                                                        {receipt.rejection_reason ||
+                                                            "Чек отклонён"}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
                                     ))}
                                 </div>
 
@@ -282,7 +381,7 @@ function Cabinet({ user, emptyReceiptsImage }) {
                                                 type="button"
                                                 className={
                                                     page ===
-                                                    pagination.page
+                                                        pagination.page
                                                         ? "pagination__button pagination__button--active"
                                                         : "pagination__button"
                                                 }
@@ -312,6 +411,30 @@ function Cabinet({ user, emptyReceiptsImage }) {
                                         </button>
                                     </div>
                                 )}
+
+                                <div className="cabinet-footer">
+                                    <div className="cabinet-info">
+                                        <span className="cabinet-info__icon">
+                                            ⓘ
+                                        </span>
+
+                                        <span>
+                                            Иногда проверка вашего чека может занять до 5 рабочих дней
+                                        </span>
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        className="cabinet-footer__button"
+                                        onClick={handleRegisterReceipt}
+                                    >
+                                        <RegisterReceiptIcon />
+
+                                        <span>
+                                            Зарегистрировать чек
+                                        </span>
+                                    </button>
+                                </div>
                             </>
                         )}
                 </div>

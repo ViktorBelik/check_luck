@@ -16,11 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from receipts.views import receipt_list
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
 
     path('receipts/', include('receipts.urls')),
+
+    path("api/receipts/", receipt_list, name="receipt-list"),
 
 ]

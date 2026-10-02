@@ -158,8 +158,8 @@ class ReceiptApiTest(TestCase):
     def test_receipts_can_be_sorted_by_amount(self):
         self.client.force_login(self.user)
 
-        self.create_receipt(1, self.user)
-        receipt = self.create_receipt(2, self.user)
+        self.create_receipt(self.user, 1)
+        receipt = self.create_receipt(self.user, 2)
 
         receipt.amount = Decimal("3000.00")
         receipt.save()
@@ -183,8 +183,8 @@ class ReceiptApiTest(TestCase):
     def test_receipts_can_be_sorted_by_amount_desc(self):
         self.client.force_login(self.user)
 
-        self.create_receipt(1, self.user)
-        receipt = self.create_receipt(2, self.user)
+        self.create_receipt(self.user, 1)
+        receipt = self.create_receipt(self.user, 2)
 
         receipt.amount = Decimal("3000.00")
         receipt.save()
