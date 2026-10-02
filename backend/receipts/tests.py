@@ -8,7 +8,6 @@ from django.test import Client, TestCase
 from .forms import ReceiptForm
 from .models import Receipt
 
-
 User = get_user_model()
 
 
@@ -95,14 +94,12 @@ class ReceiptApiTest(TestCase):
             fn=f"fn-{number}",
             fd=f"fd-{number}",
             fp=f"fp-{number}",
-            purchase_datetime=timezone.make_aware(
-                datetime(2026, 10, 15, 12, 0)
-            ),
+            purchase_datetime=timezone.make_aware(datetime(2026, 10, 15, 12, 0)),
             amount=Decimal("1500.00"),
         )
 
     def test_unauthorized_user_cannot_get_receipts(self):
-        response = self.client.get("/receipts/list/")
+        response = self.client.get("/api/receipts/")
 
         self.assertEqual(response.status_code, 302)
 
@@ -112,7 +109,7 @@ class ReceiptApiTest(TestCase):
 
         self.client.force_login(self.user)
 
-        response = self.client.get("/receipts/list/")
+        response = self.client.get("/api/receipts/")
 
         self.assertEqual(response.status_code, 200)
 
@@ -121,24 +118,24 @@ class ReceiptApiTest(TestCase):
         self.assertEqual(data["pagination"]["total"], 1)
         self.assertEqual(data["results"][0]["id"], own_receipt.id)
 
+        self.assertIn(
+            "registration_date",
+            data["results"][0],
+        )
+
     def test_user_id_parameter_does_not_break_isolation(self):
         self.create_receipt(self.user, 1)
         other_receipt = self.create_receipt(self.other_user, 2)
 
         self.client.force_login(self.user)
 
-        response = self.client.get(
-            f"/receipts/list/?user_id={self.other_user.id}"
-        )
+        response = self.client.get(f"/api/receipts/?user_id={self.other_user.id}")
 
         self.assertEqual(response.status_code, 200)
 
         data = response.json()
 
-        receipt_ids = [
-            receipt["id"]
-            for receipt in data["results"]
-        ]
+        receipt_ids = [receipt["id"] for receipt in data["results"]]
 
         self.assertNotIn(other_receipt.id, receipt_ids)
 
@@ -148,7 +145,7 @@ class ReceiptApiTest(TestCase):
 
         self.client.force_login(self.user)
 
-        response = self.client.get("/receipts/list/")
+        response = self.client.get("/api/receipts/")
 
         self.assertEqual(response.status_code, 200)
 
@@ -157,3 +154,55 @@ class ReceiptApiTest(TestCase):
         self.assertEqual(len(data["results"]), 10)
         self.assertEqual(data["pagination"]["total"], 11)
         self.assertTrue(data["pagination"]["has_next"])
+
+    def test_receipts_can_be_sorted_by_amount(self):
+        self.client.force_login(self.user)
+
+        self.create_receipt(1, self.user)
+        receipt = self.create_receipt(2, self.user)
+
+        receipt.amount = Decimal("3000.00")
+        receipt.save()
+
+        response = self.client.get("/api/receipts/?sort=amount&order=asc")
+
+        self.assertEqual(response.status_code, 200)
+
+        results = response.json()["results"]
+
+        self.assertEqual(
+            results[0]["amount"],
+            "1500.00",
+        )
+
+        self.assertEqual(
+            results[1]["amount"],
+            "3000.00",
+        )
+
+    def test_receipts_can_be_sorted_by_amount_desc(self):
+        self.client.force_login(self.user)
+
+        self.create_receipt(1, self.user)
+        receipt = self.create_receipt(2, self.user)
+
+        receipt.amount = Decimal("3000.00")
+        receipt.save()
+
+        response = self.client.get(
+            "/api/receipts/?sort=amount&order=desc"
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        results = response.json()["results"]
+
+        self.assertEqual(
+            results[0]["amount"],
+            "3000.00",
+        )
+
+        self.assertEqual(
+            results[1]["amount"],
+            "1500.00",
+        )

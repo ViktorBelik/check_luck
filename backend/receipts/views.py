@@ -68,6 +68,27 @@ def receipt_list(request):
         "-purchase_datetime", "-created_at"
     )
 
+    sort_field = request.GET.get("sort", "purchase_date")
+    sort_direction = request.GET.get("order", "desc")
+
+    sort_fields = {
+        "purchase_date": "purchase_datetime",
+        "status": "status",
+        "amount": "amount",
+        "registration_date": "created_at",
+        "information": "rejection_reason",
+    }
+
+    sort_field = sort_fields.get(sort_field, "purchase_datetime")
+
+    if sort_direction == "asc":
+        order_by = sort_field
+    else:
+        order_by = f"-{sort_field}"
+
+    receipts = Receipt.objects.filter(user=request.user).order_by(
+        order_by, "-created_at")
+
     paginator = Paginator(receipts, 10)
 
     page_number = request.GET.get("page", 1)
@@ -77,6 +98,7 @@ def receipt_list(request):
         {
             "id": receipt.id,
             "purchase_date": receipt.purchase_datetime.strftime("%d.%m.%Y %H:%M"),
+            "registration_date": receipt.created_at.strftime("%d.%m.%Y %H:%M"),
             "amount": str(receipt.amount),
             "status": receipt.status,
             "status_display": receipt.get_status_display(),
